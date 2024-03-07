@@ -1,31 +1,38 @@
-import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, ScrollView, View } from 'react-native';
-import Form from './components/Form';
-import TaskList from './components/TaskList';
-import { useState } from 'react';
-export type TaskType = { 
-  id: string,
-  name: string,
-  price: number,
-  createdAt: Date
-}
+import { StyleSheet, Text, ScrollView, View } from "react-native";
+import 'react-native-get-random-values'
+import Form from "./components/Form";
+import TaskList from "./components/TaskList";
+import { useEffect, useState } from "react";
+import { v4 } from "uuid";
+export type TaskType = {
+  id: string;
+  name: string;
+  createdAt: string;
+};
 export default function App() {
-  const [tasks, setTasks] = useState<TaskType[]>([])
-  const addTask = (newTask:TaskType) => {
-    setTasks(prevTasks => {
-      return {
+  const [tasks, setTasks] = useState<TaskType[]>([]);
+  useEffect(()=>{
+    console.log(tasks);
+    
+  },[tasks])
+  const addTask = (taskValue: string) => {
+    const newTask: TaskType = {
+      id: v4(),
+      name: taskValue, 
+      createdAt: new Date().toDateString()
+    }
+    setTasks((prevTasks) => {
+      return [
         ...prevTasks,
-        newTask
-      }
-    })
-  }
+        newTask,
+      ]
+    });
+  };
   return (
-    <ScrollView>
-      <View style={styles.layout}>
-        <>
-          <Form addTask = {addTask}/>
-          <TaskList />
-        </>
+    <ScrollView style={styles.container}>
+      <View style={styles.viewChild}>
+        <Form addTask={addTask} />
+        <TaskList tasks = {tasks}/>
       </View>
     </ScrollView>
   );
@@ -33,11 +40,13 @@ export default function App() {
 
 const styles = StyleSheet.create({
   container: {
-    backgroundColor:"#333333",
+    backgroundColor: "#222222",
+    paddingTop: 100,
+    paddingHorizontal: 100,
   },
-  layout: {
+  viewChild: {
     display: "flex",
-    flexDirection: "row",
-    justifyContent: "center"
+    flexDirection: "column",
+    justifyContent: "center",
   }
 });
